@@ -2,6 +2,7 @@ from pydantic import EmailStr, Field, field_validator
 
 from app.schemas.base import AppBaseSchema, TimestampSchema
 
+from zxcvbn import zxcvbn 
 
 # -----------------------------------------------------------------------------
 # THE SCHEMA PATTERN — one model, multiple schemas
@@ -30,7 +31,7 @@ class UserRegister(AppBaseSchema):
     """
     email: EmailStr
     full_name: str = Field(min_length=2, max_length=255)
-    password: str = Field(min_length=8, max_length=128)
+    password: str = Field(min_length=8, max_length=72)  # bcrypt truncates to 72 chars, so we enforce that limit here
     hourly_rate: float = Field(default=0.0, ge=0)  # ge=0 means >= 0, no negative rates
 
     @field_validator("full_name")
@@ -49,13 +50,20 @@ class UserRegister(AppBaseSchema):
     @classmethod
     def password_strength(cls, v: str) -> str:
         """
-        Basic password rules. In production we'd use a library like `zxcvbn`
-        for proper strength checking, but this covers the basics.
+        Use zxcvbn for password strength estimation.
+        Require a minimum score of 3 (strong) to prevent weak passwords.
         """
-        if not any(c.isdigit() for c in v):
-            raise ValueError("Password must contain at least one number")
-        if not any(c.isalpha() for c in v):
-            raise ValueError("Password must contain at least one letter")
+        result = zxcvbn(v)
+        if result['score'] < 3:
+            feedback = result.get('feedback', {})
+            suggestions = feedback.get('suggestions', [])
+            warning = feedback.get('warning', '')
+            error_msg = "Password is too weak."
+            if warning:
+                error_msg += f" Warning: {warning}."
+            if suggestions:
+                error_msg += f" Suggestions: {' '.join(suggestions)}."
+            raise ValueError(error_msg)
         return v
 
 

@@ -5,7 +5,7 @@ from app.database import get_db
 from app.helpers.user_helpers import get_user_by_email
 from app.models.user import User
 from app.schemas.auth import TokenResponse
-from app.schemas.user import UserRegister, UserResponse
+from app.schemas.user import UserLogin, UserRegister, UserResponse
 from app.services.auth_service import (
     create_access_token,
     hash_password,
@@ -74,7 +74,7 @@ async def register(
 
 @router.post("/login", response_model=TokenResponse, status_code=status.HTTP_200_OK)
 async def login(
-    payload: UserRegister, db: AsyncSession = Depends(get_db)
+    payload: UserLogin, db: AsyncSession = Depends(get_db)
 ) -> TokenResponse:
     """
     Login and receive a JWT access token.

@@ -1,7 +1,9 @@
+import base64
 from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+
 
 from app.config import settings
 
@@ -22,21 +24,15 @@ from app.config import settings
 #   verify_password("wrongpassword", "$2b$12$abc...xyz") → False
 # -----------------------------------------------------------------------------
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 
 def hash_password(plain_password: str) -> str:
-    """Convert plain text password to bcrypt hash. Call this on registration."""
     return pwd_context.hash(plain_password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    Check if a plain password matches the stored hash.
-    Call this on login — never compare plain passwords directly.
-    """
     return pwd_context.verify(plain_password, hashed_password)
-
 
 # -----------------------------------------------------------------------------
 # JWT TOKENS

@@ -14,7 +14,7 @@ dependencies = [
     "alembic>=1.13.0", # DB migrations
     # Auth
     "python-jose[cryptography]>=3.3.0", # JWT encode/decode
-    "passlib[bcrypt]>=1.7.4", # password hashing
+    "passlib[argon2]==1.7.4", # password hashing
     # Validation & Config
     "pydantic[email]>=2.0.0", # Pydantic v2 — faster, stricter
     "pydantic-settings>=2.0.0", # reads .env into a typed Settings class
@@ -25,6 +25,8 @@ dependencies = [
     "reportlab>=4.2.0", # generate invoice PDFs
     # Redis (for caching + JWT blacklist later)
     "redis>=5.0.0",
+    "psycopg2-binary>=2.9.11",
+    "zxcvbn>=4.5.0",
 ]
 
 [project.optional-dependencies]
