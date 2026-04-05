@@ -14,7 +14,7 @@ from app.config import settings
 # create_async_engine uses asyncpg under the hood (not psycopg2)
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=settings.APP_ENV == "development",  # logs all SQL in dev — very helpful!
+    echo=settings.is_development,  # logs all SQL in dev — very helpful!
     pool_size=10,         # max 10 persistent DB connections
     max_overflow=20,      # up to 20 extra connections under heavy load
 )

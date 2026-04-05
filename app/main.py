@@ -6,7 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.routers import auth, project, reports, timelog
+from app.logger import get_logger
+from app.security import RateLimitMiddleware, SecurityHeadersMiddleware
 
+logger = get_logger(__name__)
 
 # -----------------------------------------------------------------------------
 # LIFESPAN — startup and shutdown logic
@@ -29,10 +32,10 @@ from app.routers import auth, project, reports, timelog
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
-    print("🚀 FreelanceTrack API is starting up...")
+    logger.info("🚀 FreelanceTrack API is starting up...")
     yield
     # shutdown
-    print("👋 FreelanceTrack API is shutting down...")
+    logger.info("👋 FreelanceTrack API is shutting down...")
 
 
 # -----------------------------------------------------------------------------
@@ -133,7 +136,7 @@ async def unhandled_exception_handler(
     but the client only gets a clean generic message.
     In production you'd send this to Sentry or a logging service.
     """
-    print(f"❌ Unhandled exception on {request.method} {request.url}: {exc}")
+    logger.exception(f"❌ Unhandled exception on {request.method} {request.url}: {exc}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
@@ -167,6 +170,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 
 # -----------------------------------------------------------------------------
