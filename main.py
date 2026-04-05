@@ -14,7 +14,7 @@ def create_app() -> FastAPI:
     )
 
     # Configure CORS (Cross-Origin Resource Sharing)
-    # This allows your frontend (e.g., React/Vue) to talk to this API
+    # This allows our frontend (e.g., React/Vue) to talk to this API
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],  

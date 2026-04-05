@@ -1,4 +1,3 @@
-import uuid
 
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -13,15 +12,15 @@ from .project import Project
 # -----------------------------------------------------------------------------
 # HOW SQLAlchemy 2.0 MODELS WORK
 #
-# Old SQLAlchemy style (you might see this in tutorials):
+# Old SQLAlchemy style:
 #   id = Column(Integer, primary_key=True)
 #
 # New SQLAlchemy 2.0 style (what we use):
 #   id: Mapped[int] = mapped_column(primary_key=True)
 #
-# The `Mapped[type]` annotation gives you full type safety — your editor
+# The `Mapped[type]` annotation gives us full type safety — our editor
 # knows that `user.id` is a uuid.UUID, not "any value". This catches bugs
-# before you even run the code.
+# before we even run the code.
 # -----------------------------------------------------------------------------
 
 
@@ -46,14 +45,14 @@ class User(Base, MyModelMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     # Default hourly rate — used in invoice calculations
-    # Stored as float here; in a real billing system you'd use Numeric(10,2)
+    # Stored as float here; in a real billing system we'd use Numeric(10,2)
     hourly_rate: Mapped[float] = mapped_column(default=0.0, nullable=False)
 
     # -----------------------------------------------------------------------------
     # RELATIONSHIPS
     # This tells SQLAlchemy: "a User has many Projects"
     # `back_populates` creates the reverse: project.owner → the User
-    # `cascade="all, delete-orphan"` means if you delete a User,
+    # `cascade="all, delete-orphan"` means if we delete a User,
     # all their Projects are automatically deleted too (like Django's CASCADE)
     # `lazy="selectin"` is important for async — it pre-loads related data
     # in a separate SELECT rather than lazy-loading (which breaks in async)

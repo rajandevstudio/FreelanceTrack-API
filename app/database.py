@@ -5,7 +5,7 @@ from app.config import settings
 
 # -----------------------------------------------------------------------------
 # WHY ASYNC?
-# In a regular (sync) Django/Flask app, when your code hits the DB, Python
+# In a regular (sync) Django/Flask app, when our code hits the DB, Python
 # literally WAITS — the thread is blocked doing nothing.
 # With async, while waiting for DB, Python can handle OTHER requests.
 # For an API with many concurrent users, this is a huge performance win.
@@ -41,7 +41,7 @@ class Base(DeclarativeBase):
 #       result = await db.execute(...)
 #
 # The `yield` makes it a context manager:
-#   - Opens session before your route runs
+#   - Opens session before our route runs
 #   - Closes (and rolls back on error) after it finishes
 # This ensures no session leaks, even if an exception is raised.
 # -----------------------------------------------------------------------------

@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     """
     All app configuration lives here.
 
-    pydantic-settings automatically reads from your .env file.
+    pydantic-settings automatically reads from our .env file.
     If a variable is missing, it raises an error at startup.
     Silent misconfigurations cause hard-to-debug bugs.
     """
@@ -33,5 +33,5 @@ class Settings(BaseSettings):
 
 
 # Single instance used across the entire app.
-# Importing `settings` anywhere gives you the same object — no re-reading .env.
+# Importing `settings` anywhere gives us the same object — no re-reading .env.
 settings = Settings()

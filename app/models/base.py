@@ -50,5 +50,3 @@ class MyModelMixin:
         index=True,
     )
 
-
-__all__ = ["MyModelMixin"]

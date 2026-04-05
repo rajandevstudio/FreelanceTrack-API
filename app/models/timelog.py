@@ -31,10 +31,10 @@ class TimeLog(Base, MyModelMixin):
         nullable=False,
     )
 
-    # What did you actually work on? Good for invoice line items.
+    # What did we actually work on? Good for invoice line items.
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    # Date the work was done — separate from created_at (you might log yesterday's work today)
+    # Date the work was done — separate from created_at (we might log yesterday's work today)
     # `date` type stores only the date, not time — perfect for timesheets
     work_date: Mapped[date] = mapped_column(Date, nullable=False)
 

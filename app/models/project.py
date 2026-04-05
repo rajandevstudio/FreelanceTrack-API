@@ -5,9 +5,9 @@ from sqlalchemy import String, Text, ForeignKey, Numeric, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from .base import MyModelMixin
-from .user import User
-from .timelog import TimeLog
+from app.models.base import MyModelMixin
+from app.models.user import User
+from app.models.timelog import TimeLog
 
 
 
@@ -17,7 +17,7 @@ from .timelog import TimeLog
 #
 # We could store status as a plain string — "active", "completed", etc.
 # But enums give us two advantages:
-#   1. Python-side: your editor autocompletes valid values, typos are caught
+#   1. Python-side: our editor autocompletes valid values, typos are caught
 #   2. DB-side: PostgreSQL creates a real ENUM type, invalid values are rejected
 #      at the database level — not just the app level
 #
