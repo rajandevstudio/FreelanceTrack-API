@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 import uuid
 from enum import Enum
 
@@ -6,9 +9,16 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 from app.models.base import MyModelMixin
-from app.models.user import User
-from app.models.timelog import TimeLog
 
+ 
+from typing import TYPE_CHECKING
+ 
+
+if TYPE_CHECKING:
+    # This block ONLY runs for static analysers (Pylance, mypy) — never at runtime.
+    # So there's no circular import. Python skips this entire block when actually running.
+    from app.models.timelog import TimeLog
+    from app.models.user import User
 
 
 

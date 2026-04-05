@@ -7,28 +7,22 @@ requires-python = ">=3.11"
 dependencies = [
     # FastAPI + ASGI server
     "fastapi>=0.115.0",
-    "uvicorn[standard]>=0.30.0",   # [standard] includes websocket + reload support
-
+    "uvicorn[standard]>=0.30.0", # [standard] includes websocket + reload support
     # Database (async SQLAlchemy + PostgreSQL driver)
-    "sqlalchemy[asyncio]>=2.0.0",  # SQLAlchemy 2.0 has full async support
-    "asyncpg>=0.29.0",             # async PostgreSQL driver (much faster than psycopg2)
-    "alembic>=1.13.0",             # DB migrations
-
+    "sqlalchemy[asyncio]>=2.0.0", # SQLAlchemy 2.0 has full async support
+    "asyncpg>=0.29.0", # async PostgreSQL driver (much faster than psycopg2)
+    "alembic>=1.13.0", # DB migrations
     # Auth
-    "python-jose[cryptography]>=3.3.0",  # JWT encode/decode
-    "passlib[bcrypt]>=1.7.4",            # password hashing
-
+    "python-jose[cryptography]>=3.3.0", # JWT encode/decode
+    "passlib[bcrypt]>=1.7.4", # password hashing
     # Validation & Config
-    "pydantic>=2.0.0",                  # Pydantic v2 — faster, stricter
-    "pydantic-settings>=2.0.0",         # reads .env into a typed Settings class
-
+    "pydantic[email]>=2.0.0", # Pydantic v2 — faster, stricter
+    "pydantic-settings>=2.0.0", # reads .env into a typed Settings class
     # Utilities
-    "python-multipart>=0.0.9",          # needed for form data (login form)
-    "httpx>=0.27.0",                    # async HTTP client (used in tests)
-
+    "python-multipart>=0.0.9", # needed for form data (login form)
+    "httpx>=0.27.0", # async HTTP client (used in tests)
     # PDF generation
-    "reportlab>=4.2.0",                 # generate invoice PDFs
-
+    "reportlab>=4.2.0", # generate invoice PDFs
     # Redis (for caching + JWT blacklist later)
     "redis>=5.0.0",
 ]

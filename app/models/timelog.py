@@ -5,9 +5,8 @@ from sqlalchemy import Date, ForeignKey, Numeric, Text, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from .base import MyModelMixin
-from .project import Project
-
+from app.models.base import MyModelMixin
+from app.models.project import Project
 
 class TimeLog(Base, MyModelMixin):
     """

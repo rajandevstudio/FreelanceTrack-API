@@ -1,12 +1,18 @@
 
+from __future__ import annotations
+ 
+from typing import TYPE_CHECKING
+ 
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from .base import MyModelMixin
-from .project import Project
+from app.models.base import MyModelMixin
 
-
+if TYPE_CHECKING:
+    # This block ONLY runs for static analysers (Pylance, mypy) — never at runtime.
+    # So there's no circular import. Python skips this entire block when actually running.
+    from app.models.project import Project
 
 
 # -----------------------------------------------------------------------------
