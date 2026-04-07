@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+
+# Environment — NEVER bake secrets into Docker images
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+
+# Tests (not needed at runtime)
+tests/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Docs
+README.md
+*.md
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

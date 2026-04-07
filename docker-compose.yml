@@ -1,0 +1,87 @@
+
+# -----------------------------------------------------------------------------
+# WHAT IS DOCKER COMPOSE?
+#
+# Your app needs three things running simultaneously:
+#   1. The FastAPI app
+#   2. PostgreSQL database
+#   3. Redis (for caching / JWT blacklist later)
+#
+# Without compose, you'd start each one manually in separate terminals,
+# configure them to talk to each other, and manage them yourself.
+#
+# With compose, one command starts everything correctly wired together:
+#   docker compose up
+#
+# This is also what recruiters and new team members run to get started.
+# Your CommunityEvents project required manual setup — this doesn't.
+# -----------------------------------------------------------------------------
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine       # alpine = smaller image, same functionality
+    restart: unless-stopped         # restart if it crashes, stop only on manual stop
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: freelancetrack
+    ports:
+      - "5432:5432"                 # host:container — access from your machine too
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # persist data between restarts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI App ───────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # These override your .env file when running inside Docker
+      # The hostnames (db, redis) match the service names above —
+      # Docker Compose creates an internal network where services find
+      # each other by their service name, not localhost
+      DATABASE_URL: postgresql+asyncpg://35efbc97f97562197394323a8d2d74c794ebed8eaf03d4dfc4a94f49839ae35b:sk_TE6kkt9pMKPc4HwF7cshg@db.prisma.io:5432/postgres
+      REDIS_URL: redis://redis:6379
+      SECRET_KEY: ${SECRET_KEY}         # still read from your .env on the host
+      ALGORITHM: ${ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      APP_ENV: 
+    depends_on:
+      db:
+        condition: service_healthy      # wait for DB to be ready before starting app
+      redis:
+        condition: service_healthy      # wait for Redis to be ready
+    # volumes:
+      # Mount your code into the container — changes reflect immediately
+      # Remove this in production (code should be baked into the image)
+      # - ./app:/app/app
+
+# Named volumes — Docker manages these, data persists between `docker compose down` calls
+# Use `docker compose down -v` to also delete the volumes (wipes DB data)
+volumes:
+  postgres_data:
+  redis_data:

@@ -43,5 +43,6 @@ asyncio_mode = "auto"           # all async tests run automatically
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.uv]
-package = false
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
