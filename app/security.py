@@ -93,7 +93,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next) -> Response:
-        if settings.is_development:
+        if settings.TESTING:
             # Skip rate limiting in development for easier testing
             return await call_next(request)
         ip = _get_client_ip(request)
@@ -148,7 +148,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
-        if settings.is_development:
+        if settings.TESTING:
             # Skip strict headers in development for easier debugging
             return await call_next(request)
         response = await call_next(request)

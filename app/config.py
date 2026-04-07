@@ -22,7 +22,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # App
-    APP_ENV: str = "development"
+    APP_ENV: str
+
+    TESTING: bool = False  # Used to detect test environment in code (e.g. faster hashing)
 
     @property
     def is_production(self) -> bool:
