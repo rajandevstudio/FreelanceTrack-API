@@ -11,6 +11,10 @@ from app.services.auth_service import (
     hash_password,
     verify_password,
 )
+from app.logger import get_logger
+from app.dependencies.auth import get_current_user
+logger = get_logger(__name__)
+
 
 # -----------------------------------------------------------------------------
 # WHAT IS A ROUTER?
@@ -26,6 +30,17 @@ from app.services.auth_service import (
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
+
+@router.get("/me", response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def get_me(
+    current_user: User = Depends(get_current_user),
+) -> UserResponse:
+    """
+    Returns the currently authenticated user's profile.
+    No DB call needed — get_current_user already fetched the user.
+    The JWT token IS the auth — we just return what's already in memory.
+    """
+    return current_user
 
 @router.post(
     "/register",

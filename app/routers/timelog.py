@@ -50,6 +50,7 @@ async def log_time(
     )
     db.add(time_log)
     await db.flush()
+    await db.refresh(time_log)
     return time_log
 
 

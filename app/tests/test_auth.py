@@ -71,3 +71,20 @@ async def test_protected_route_without_token(client: AsyncClient):
     response = await client.get("/api/v1/projects/")
     assert response.status_code == 401
 
+async def test_get_current_user(client: AsyncClient):
+    await client.post("/api/v1/auth/register", json={
+        "email": "me@test.com",
+        "full_name": "Me User",
+        "password": "Str0ngP@ssw0rd!2026",
+        "hourly_rate": 1500
+    })
+    login = await client.post("/api/v1/auth/login", json={
+        "email": "me@test.com", "password": "Str0ngP@ssw0rd!2026"
+    })
+    token = login.json()["access_token"]
+
+    response = await client.get("/api/v1/auth/me", headers={
+        "Authorization": f"Bearer {token}"
+    })
+    assert response.status_code == 200
+    assert response.json()["email"] == "me@test.com"

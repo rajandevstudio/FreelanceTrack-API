@@ -126,7 +126,7 @@ class Project(Base, MyModelMixin):
     @property
     def total_earned(self) -> float:
         """Total earnings = hours × rate."""
-        return round(self.total_hours * float(self.hourly_rate), 2)
+        return round(float(self.total_hours) * float(self.hourly_rate), 2)
 
     def __repr__(self) -> str:
         return f"<Project {self.name} ({self.status})>"
