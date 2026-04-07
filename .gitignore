@@ -24,6 +24,9 @@ wheels/
 .pytest_cache/
 htmlcov/
 .coverage
+.coverage.*
+test.db
+
 
 # Alembic (keep the folder, ignore auto-generated)
 alembic/versions/*.pyc
@@ -33,3 +36,4 @@ alembic/versions/*.pyc
 Thumbs.db
 
 .vscode
+

@@ -4,13 +4,18 @@ from __future__ import annotations
 import uuid
 from enum import Enum
 
+from sqlalchemy.exc import MissingGreenlet
 from sqlalchemy import String, Text, ForeignKey, Numeric, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app import logger
 from app.database import Base
 from app.models.base import MyModelMixin
 
- 
+from app.logger import get_logger
+
+logger = get_logger(__name__)
+
 from typing import TYPE_CHECKING
  
 
@@ -112,7 +117,11 @@ class Project(Base, MyModelMixin):
     @property
     def total_hours(self) -> float:
         """Sum of all logged hours — computed in Python, not SQL."""
-        return sum(log.hours for log in self.time_logs)
+        try:
+            return sum(log.hours for log in self.time_logs)
+        except MissingGreenlet:
+            logger.warning("total_hours accessed outside of request context — returning 0.0")
+            return 0.0
 
     @property
     def total_earned(self) -> float:

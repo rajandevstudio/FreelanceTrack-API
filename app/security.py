@@ -5,6 +5,7 @@ from fastapi import HTTPException, Request, status
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
+from app.config import settings
 from app.logger import get_logger
 
 logger = get_logger(__name__)
@@ -92,6 +93,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next) -> Response:
+        if settings.is_development:
+            # Skip rate limiting in development for easier testing
+            return await call_next(request)
         ip = _get_client_ip(request)
         path = request.url.path
 
@@ -144,6 +148,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
+        if settings.is_development:
+            # Skip strict headers in development for easier debugging
+            return await call_next(request)
         response = await call_next(request)
 
         response.headers["X-Content-Type-Options"] = "nosniff"

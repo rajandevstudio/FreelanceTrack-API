@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,14 +37,14 @@ async def get_projects(db: AsyncSession, current_user: User) -> list[ProjectSumm
     projects = result.scalars().all()
     return projects
 
-async def get_project_by_id(db: AsyncSession, project_id: int, current_user: User) -> Project | None:
+async def get_project_by_id(db: AsyncSession, project_id: uuid.UUID, owner_id: uuid.UUID) -> Project | None:
     """
     Fetch a project by ID. Returns None if not found, deleted, or doesn't belong to the user.
     """
     result = await db.execute(
         select(Project).where(
             Project.id == project_id,
-            Project.owner_id == current_user.id,
+            Project.owner_id == owner_id,
             Project.deleted == False,
         )
     )

@@ -96,6 +96,7 @@ async def update_project(
         setattr(project, field, value)  # update only the sent fields
 
     await db.flush()
+    await db.refresh(project)
     return project
 
 
@@ -132,7 +133,7 @@ async def _get_project_or_404(
     owner_id: uuid.UUID,
 ) -> Project:
     """Fetch a project by ID and owner. Raises 404 if not found or not owned."""
-    project = get_project_by_id(db, project_id, owner_id)  # reuse the same query logic
+    project = await get_project_by_id(db, project_id, owner_id)  # reuse the same query logic
 
     if not project:
         raise HTTPException(

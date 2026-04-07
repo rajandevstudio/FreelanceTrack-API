@@ -35,9 +35,9 @@ from app.services.auth_service import decode_access_token
 
 # OAuth2PasswordBearer tells FastAPI:
 #   "Tokens come from the Authorization header as Bearer tokens"
-#   "If no token, redirect the client to /auth/login to get one"
+#   "If no token, redirect the client to /api/v1/auth/login to get one"
 # It also makes the Swagger UI show an Authorize button automatically.
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
 async def get_current_user(
