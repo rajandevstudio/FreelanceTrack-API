@@ -93,8 +93,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next) -> Response:
-        if settings.TESTING:
-            # Skip rate limiting in development for easier testing
+        if settings.ENVIRONMENT in ["local", "development"] or settings.TESTING:
             return await call_next(request)
         ip = _get_client_ip(request)
         path = request.url.path
@@ -148,18 +147,39 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
-        if settings.TESTING:
-            # Skip strict headers in development for easier debugging
+        if settings.ENVIRONMENT in ["local", "development"] or settings.TESTING:
             return await call_next(request)
+        
         response = await call_next(request)
 
+        # Common headers
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
-        response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Content-Security-Policy"] = "default-src 'none'"
         response.headers["Strict-Transport-Security"] = (
             "max-age=31536000; includeSubDomains"
         )
+
+        path = request.url.path
+
+        # 🔥 Route-based CSP
+        if path.startswith("/docs") or path.startswith("/redoc"):
+            # Swagger / ReDoc needs relaxed policy
+            response.headers["Content-Security-Policy"] = (
+                "default-src 'self'; "
+                "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+                "img-src 'self' data: https://fastapi.tiangolo.com; "
+                "font-src 'self' https://cdn.jsdelivr.net;"
+            )
+        else:
+            # 🔒 Strict CSP for API
+            response.headers["Content-Security-Policy"] = (
+                "default-src 'none'; "
+                "frame-ancestors 'none'; "
+                "base-uri 'none'; "
+                "form-action 'self';"
+            )
+
 
         return response
