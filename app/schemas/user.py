@@ -1,4 +1,7 @@
-from pydantic import EmailStr, Field, field_validator
+from typing import Any
+from urllib.parse import parse_qs
+
+from pydantic import EmailStr, Field, field_validator, model_validator
 
 from app.schemas.base import AppBaseSchema, TimestampSchema
 
@@ -74,6 +77,22 @@ class UserLogin(AppBaseSchema):
     """
     email: EmailStr
     password: str
+
+    @model_validator(mode="before")
+    @classmethod
+    def handle_username_as_email(cls, data: Any):
+        if isinstance(data, dict):
+            # If email not provided but username exists → map it
+            if "email" not in data and "username" in data:
+                data["email"] = data["username"]
+        else:
+            parsed = parse_qs(data.decode())
+            # flatten values (parse_qs returns list values)
+            data_ = {k: v[0] for k, v in parsed.items()}
+            if "email" not in data_ and "username" in data_:
+                data_["email"] = data_["username"]
+            data = data_
+        return data
 
 
 class UserResponse(TimestampSchema):

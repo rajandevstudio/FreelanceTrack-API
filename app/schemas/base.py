@@ -34,3 +34,6 @@ class TimestampSchema(AppBaseSchema):
     created_at: datetime
     updated_at: datetime
 
+class HealthResponse(BaseModel):
+    status: str
+    version: str
