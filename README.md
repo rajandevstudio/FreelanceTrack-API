@@ -14,6 +14,13 @@ would need.
 
 ---
 
+## 🔗 Live API
+**Base URL:** `https://freelancetrack-api.onrender.com`
+**Interactive docs:** [https://freelancetrack-api.onrender.com/docs](https://freelancetrack-api.onrender.com/docs)
+
+> Note: Hosted on Render free tier — first request may take 30–50 seconds to wake the instance.
+
+---
 ## What it does
 
 A freelancer registers, creates projects with an hourly rate, logs time against 
