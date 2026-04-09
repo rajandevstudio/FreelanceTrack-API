@@ -93,7 +93,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next) -> Response:
-        if settings.ENVIRONMENT in ["local", "development"] or settings.TESTING:
+        if settings.APP_ENV in ["local", "development"] or settings.TESTING:
             return await call_next(request)
         ip = _get_client_ip(request)
         path = request.url.path
@@ -147,7 +147,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
-        if settings.ENVIRONMENT in ["local", "development"] or settings.TESTING:
+        if settings.APP_ENV in ["local", "development"] or settings.TESTING:
             return await call_next(request)
         
         response = await call_next(request)
